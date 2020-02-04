@@ -1,0 +1,10 @@
+.shower{
+    background-color: aqua;
+    border: 2px solid black;
+    height:  70px;
+    width: 70px;
+    display: inline-block;
+}
+.row{
+    width:100%;
+}
