@@ -1,9 +1,9 @@
 .shower{
     background-color: aqua;
     border: 2px solid black;
-    height:  70px;
-    width: 70px;
+    padding:1rem;
     display: inline-block;
+    font-size: 15rem;
 }
 .row{
     width:100%;
