@@ -48,18 +48,31 @@ class Home extends Component{
         console.log("Called!")
         let state = this.state;
         state.board[i][j] = -1;
-        state = this.computerMakeMove(state);
-        let winner = this.checkWin(state.board)
-        if(winner !== 0){
-            state.winner = state.decode[winner + 1]
+        let winner = this.checkWin(state.board);
+        if(winner === 0){
+            state = this.computerMakeMove(state);
+            winner = this.checkWin(state.board);
+        }else{
+            state.winner = state.decode[winner + 1];
         }
         this.setState(state);
         
     }
 
+    test=(board, recursionLevel,previousLevels)=>{
+        let possibleMoves =[];
+        board.forEach((row,rowNum)=>{
+            row.forEach((value, valueNum)=>{
+                if(value === 0)
+                possibleMoves.push([rowNum,valueNum])
+            })
+        })
+        console.log(possibleMoves)
+    }
+
     computerMakeMove = (state)=>{
-        
-        return state;
+        let results = this.test(state.board,0);
+        return state;//Math.max(results);
     }
 
     render(){
