@@ -59,7 +59,7 @@ class Home extends Component{
         
     }
 
-    test=(board, recursionLevel,previousLevels)=>{
+    getPossibleMoves = (board, value)=>{
         let possibleMoves =[];
         board.forEach((row,rowNum)=>{
             row.forEach((value, valueNum)=>{
@@ -68,6 +68,22 @@ class Home extends Component{
             })
         })
         console.log(possibleMoves)
+        const possibleBoardStates = []
+        possibleMoves.forEach(e=>{
+            let tempBoard = JSON.parse(JSON.stringify(board));
+            possibleBoardStates.push(tempBoard);
+        })
+        console.log(possibleBoardStates);
+        possibleBoardStates.forEach((e,i)=>{
+            e[possibleMoves[i][0]][possibleMoves[i][1]] = value;
+        })
+        return possibleBoardStates;
+    }
+
+    test=(board, recursionLevel,previousLevels)=>{
+        let possibles = this.getPossibleMoves(board,1);
+        let chances = possibles.map(e=>this.checkWin(e));
+
     }
 
     computerMakeMove = (state)=>{
