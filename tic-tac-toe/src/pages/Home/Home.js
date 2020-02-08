@@ -45,7 +45,6 @@ class Home extends Component{
     }
 
     makeMove = (i,j)=>{
-        console.log("Called!")
         let state = this.state;
         state.board[i][j] = -1;
         let winner = this.checkWin(state.board);
@@ -67,27 +66,80 @@ class Home extends Component{
                 possibleMoves.push([rowNum,valueNum])
             })
         })
-        console.log(possibleMoves)
         const possibleBoardStates = []
         possibleMoves.forEach(e=>{
             let tempBoard = JSON.parse(JSON.stringify(board));
             possibleBoardStates.push(tempBoard);
         })
-        console.log(possibleBoardStates);
         possibleBoardStates.forEach((e,i)=>{
             e[possibleMoves[i][0]][possibleMoves[i][1]] = value;
         })
         return possibleBoardStates;
     }
 
-    test=(board, recursionLevel,previousLevels)=>{
-        let possibles = this.getPossibleMoves(board,1);
+    test=(board, recursionLevel,previousLevel, minMax)=>{
+        let functions = [
+            (arr)=>Math.min(...arr),
+            (arr)=>Math.max(...arr)
+        ]
+        let possibles = this.getPossibleMoves(board,recursionLevel%2!==1? 1:-1 );
         let chances = possibles.map(e=>this.checkWin(e));
-
+        let currentLevel = {possibles,
+            chances,
+            likelyResult : 0
+        }
+        currentLevel.likelyResult = functions[recursionLevel%2](chances);
+        
+        // console.log("CurrentLevel: ");
+        // console.log(currentLevel);
+        const twoMoves = []
+        //console.log(recursionLevel)
+        if(recursionLevel<5 && currentLevel.likelyResult === 0){
+            recursionLevel++;
+            for(let i = 0; i<possibles.length; i++){
+                if(chances[i] === 0){
+                    const check = this.test(possibles[i], Math.parse(recursionLevel.toString()), currentLevel)
+                    if(check !== undefined && check.likelyResult === -1){
+                        currentLevel.likelyResult = -1;
+                        return currentLevel;
+                    }
+                    twoMoves.push(check)}
+                //console.log("here I am.")
+                if(twoMoves[i] !== undefined){ 
+                    if(twoMoves[i].chances.includes(-1)){
+                        //currentLevel.likelyResult = twoMoves[i].likelyResult;
+                        break;
+                    }
+                }
+            }
+        }
+        currentLevel.twoMoves = twoMoves;
+        return currentLevel
     }
 
+    getDifferentLevel(twoMoves){
+        twoMoves.forEach((e,i)=>{
+            if(!e.chances.includes(-1) && e.chances.includes(1)){
+                return i;
+            }
+        })
+        return 0;
+    }
+
+    getIdealChoice(results){
+        results.chances.forEach((e,i)=>{
+            if(e>0){
+                return(results.possibleMoves[i])
+            }
+        })
+
+    }
+    
     computerMakeMove = (state)=>{
-        let results = this.test(state.board,0);
+        let results = this.test(state.board,0,null);
+        console.log("results")
+        console.log(results);
+        console.log(this.getIdealChoice(results))
         return state;//Math.max(results);
     }
 
