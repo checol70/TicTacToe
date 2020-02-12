@@ -4,7 +4,7 @@ class Home extends Component {
   state = {
     board: [
       [0, 0, 0],
-      [0, 0, 0],
+      [0, 1, 0],
       [0, 0, 0]
     ],
     decode: ["X", "", "O"],
