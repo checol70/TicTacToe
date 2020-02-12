@@ -7,8 +7,8 @@ class Home extends Component {
       [0, 1, 0],
       [0, 0, 0]
     ],
-    decode: ["O", "", "X"],
-    winner: ""
+    decode: ["O", "\u00a0", "X"],
+    winner: "\u00a0"
   };
   showState = () => {
     let table = [];
@@ -16,14 +16,9 @@ class Home extends Component {
       let row = [];
       element.forEach((val, itemNum) => {
         row.push(
-          <p
-            className="shower"
-            key={rowNum.toString() + itemNum.toString()}
-            onClick={() => {
-              if (val === 0) this.makeMove(rowNum, itemNum);
-            }}
-          >
-            {"\u00a0" + this.state.decode[val + 1] + "\u00a0"}
+          <p className="shower col-3" key={rowNum.toString() + itemNum.toString()}
+            onClick={() => { if (val === 0) this.makeMove(rowNum, itemNum);}}>
+            {this.state.decode[val + 1]}
           </p>
         );
       });
@@ -71,7 +66,7 @@ class Home extends Component {
   };
 
   makeMove = (i, j) => {
-    if (this.state.winner === "") {
+    if (this.state.winner === this.state.decode[1]) {
       let state = this.state;
       state.board[i][j] = -1;
 
