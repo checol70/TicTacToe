@@ -7,7 +7,7 @@ class Home extends Component {
       [0, 1, 0],
       [0, 0, 0]
     ],
-    decode: ["X", "", "O"],
+    decode: ["O", "", "X"],
     winner: ""
   };
   showState = () => {
