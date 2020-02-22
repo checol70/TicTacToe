@@ -14,14 +14,31 @@ class Home extends Component {
     let table = [];
     this.state.board.forEach((element, rowNum) => {
       let row = [];
+        let css = "";
+        if(rowNum === 0)
+        {css += " border-bottom";}
+        else if (rowNum === 1)
+        {css += " border-bottom border-top";}
+        else if (rowNum === 2){
+            css += " border-top";
+        }
+row.push(<div className = "col-md-0 col-lg-3"></div>)
       element.forEach((val, itemNum) => {
+          let css2 = "";
+          if(itemNum <= 1){
+              css2 += " border-right"
+          } 
+          if (itemNum >=1){
+              css2 += " border-left"
+          }
         row.push(
-          <p className="shower col-3" key={rowNum.toString() + itemNum.toString()}
+          <p className={"text-center border-warning shower col-4 col-sm-4 col-lg-2 align-items-center" + css + css2} key={rowNum.toString() + itemNum.toString()}
             onClick={() => { if (val === 0) this.makeMove(rowNum, itemNum);}}>
             {this.state.decode[val + 1]}
           </p>
         );
       });
+      row.push(<div className = "col-md-0 col-lg-3"></div>)
       table.push(
         <div className="row" key={rowNum}>
           {row}
@@ -194,7 +211,7 @@ class Home extends Component {
 
   render() {
     return (
-      <div>
+      <div className = "container">
         <p>{this.state.winner}</p>
         {this.showState()}
       </div>

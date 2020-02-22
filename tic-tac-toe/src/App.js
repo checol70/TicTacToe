@@ -5,7 +5,7 @@ import Home from './pages/Home'
 import 'bootstrap/dist/css/bootstrap.min.css';
 function App() {
   return (
-    <div className="App container">
+    <div className="App">
       <header className="App-header">
         <BrowserRouter><div>
               <Switch>
