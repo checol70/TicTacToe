@@ -14,31 +14,56 @@ class Home extends Component {
     let table = [];
     this.state.board.forEach((element, rowNum) => {
       let row = [];
-        let css = "";
-        if(rowNum === 0)
-        {css += " border-bottom";}
-        else if (rowNum === 1)
-        {css += " border-bottom border-top";}
-        else if (rowNum === 2){
-            css += " border-top";
-        }
-row.push(<div className = "col-md-0 col-lg-3"></div>)
+      let css = "";
+      if (rowNum === 0) {
+        css += " border-bottom";
+      } else if (rowNum === 1) {
+        css += " border-bottom border-top";
+      } else if (rowNum === 2) {
+        css += " border-top";
+      }
+      row.push(
+        <div key={"Spacer" + rowNum} className="col-md-0 col-lg-3"></div>
+      );
       element.forEach((val, itemNum) => {
-          let css2 = "";
-          if(itemNum <= 1){
-              css2 += " border-right"
-          } 
-          if (itemNum >=1){
-              css2 += " border-left"
-          }
+        let css2 = "";
+        if (itemNum <= 1) {
+          css2 += " border-right";
+        }
+        if (itemNum >= 1) {
+          css2 += " border-left";
+        }
+        let cssStyle = {};
+        if (val === 1) {
+          cssStyle = { color: "#B31D12" };
+        } else {
+          cssStyle = { color: "#1B66B3" };
+        }
         row.push(
-          <p className={"text-center border-warning shower col-4 col-sm-4 col-lg-2 align-items-center" + css + css2} key={rowNum.toString() + itemNum.toString()}
-            onClick={() => { if (val === 0) this.makeMove(rowNum, itemNum);}}>
+          <p
+            className={
+              "text-center shower col-4 col-sm-4 col-lg-2 align-items-center" +
+              css +
+              css2
+            }
+            style={cssStyle}
+            ref={node => {
+              if (node) {
+                node.style.setProperty("border-color", "#1B66B3", "important");
+              }
+            }}
+            key={rowNum.toString() + itemNum.toString()}
+            onClick={() => {
+              if (val === 0) this.makeMove(rowNum, itemNum);
+            }}
+          >
             {this.state.decode[val + 1]}
           </p>
         );
       });
-      row.push(<div className = "col-md-0 col-lg-3"></div>)
+      row.push(
+        <div key={"Spacer" + rowNum + 2} className="col-md-0 col-lg-3"></div>
+      );
       table.push(
         <div className="row" key={rowNum}>
           {row}
@@ -84,6 +109,7 @@ row.push(<div className = "col-md-0 col-lg-3"></div>)
 
   makeMove = (i, j) => {
     if (this.state.winner === this.state.decode[1]) {
+      console.log("makeMove Started");
       let state = this.state;
       state.board[i][j] = -1;
 
@@ -97,10 +123,16 @@ row.push(<div className = "col-md-0 col-lg-3"></div>)
         state = this.computerMakeMove(state);
         winner = this.checkWin(state.board);
       }
+      draw =
+        state.board[0]
+          .concat(state.board[1])
+          .concat(state.board[2])
+          .indexOf(0) === -1;
+      console.log(draw);
       if (draw) {
         state.winner = "Stalemate";
-      } else {
-        state.winner = state.decode[winner + 1];
+      } else if(winner !== 0) {
+        state.winner = `${state.decode[winner + 1]} Wins!`;
       }
       this.setState(state);
     }
@@ -163,7 +195,7 @@ row.push(<div className = "col-md-0 col-lg-3"></div>)
     return 0;
   }
 
-  getIdealChoice(results) {
+  getIdealChoice = (results) => {
     const win = results.chances.indexOf(1);
     if (win > -1) {
       return results.possibles[win];
@@ -209,11 +241,40 @@ row.push(<div className = "col-md-0 col-lg-3"></div>)
     return state; //Math.max(results);
   };
 
+  showWinner = () => {
+    if (this.state.winner !== this.state.decode[1]) {
+      return (
+        <div>
+          <div className="row">
+            <p className="col-12 ">{this.state.winner}</p>
+          </div>
+          <div className="row">
+            <div className="col-5"></div>
+            <button className="col-3" onClick ={()=> this.resetBoard()}>Try Again?</button>
+            <div className="col-4"></div>
+          </div>
+        </div>
+      );
+    }
+    return <div></div>;
+  };
+
+  resetBoard = ()=>{
+    let state = this.state;
+      state.board = [
+        [0, 0, 0],
+        [0, 1, 0],
+        [0, 0, 0]
+      ];
+      state.winner = state.decode[1]
+      this.setState(state);
+  }
+
   render() {
     return (
-      <div className = "container">
-        <p>{this.state.winner}</p>
+      <div className="container">
         {this.showState()}
+        {this.showWinner()}
       </div>
     );
   }
